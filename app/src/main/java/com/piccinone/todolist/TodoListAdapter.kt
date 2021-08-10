@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 
 class TodoListAdapter(private val data: ArrayList<TodoListEntry>, private val dataFiltered: ArrayList<TodoListEntry>, private val context: Context?) : RecyclerView.Adapter<TodoListAdapter.TodoListViewHolder>() {
 
@@ -24,8 +25,22 @@ class TodoListAdapter(private val data: ArrayList<TodoListEntry>, private val da
         val currentItem = dataFiltered[position]
 
         //Populate respective view holder with the data
-        holder.textView.text = currentItem.taskName
+        holder.nameTextView.text = currentItem.taskName
         holder.checkBox.isChecked = currentItem.completed
+        holder.dateTextView.text = currentItem.date
+
+        holder.checkBox.setOnClickListener {
+            val gson: Gson = Gson()
+
+            var updatedData: ArrayList<TodoListEntry> = ArrayList()
+
+            updatedData = dataFiltered.clone() as ArrayList<TodoListEntry>;
+            updatedData[position] = TodoListEntry(holder.checkBox.isChecked, currentItem.taskName, currentItem.date)
+
+            val editor = context?.getSharedPreferences("todolist", 0)?.edit()
+            editor?.putString("todolistitems", gson.toJson(updatedData))
+            editor?.apply()
+        }
 
     }
 
@@ -34,7 +49,8 @@ class TodoListAdapter(private val data: ArrayList<TodoListEntry>, private val da
     }
 
     class TodoListViewHolder(rowInstance: View) : RecyclerView.ViewHolder(rowInstance) {
-        val textView: TextView = rowInstance.findViewById(R.id.taskTextView)
+        val nameTextView: TextView = rowInstance.findViewById(R.id.taskTextView)
         val checkBox: CheckBox = rowInstance.findViewById(R.id.completedCheckbox)
+        val dateTextView: TextView = rowInstance.findViewById(R.id.dateTextView)
     }
 }
