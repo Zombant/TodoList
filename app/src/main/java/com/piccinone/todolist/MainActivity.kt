@@ -72,36 +72,11 @@ class MainActivity : AppCompatActivity(), AddItemDialogFragment.AddItemDialogLis
         }
 
         // Store in shared preferences
-        storeNewTask(TodoListEntry(false, taskName, date))
+        SharedPrefsUpdate.storeNewTask(applicationContext, TodoListEntry(false, taskName, date))
     }
 
     // When the "Cancel" button is pressed on the AddItemDialogFragment
     override fun onDialogNegativeClick(dialog: DialogFragment) {
         //Do nothing
-    }
-
-    private fun getTodoSharedPrefs() : ArrayList<TodoListEntry>{
-        val gson: Gson = Gson()
-        val json = getSharedPreferences("todolist", 0)?.getString("todolistitems",null)
-        var data: ArrayList<TodoListEntry>
-        if(json != null) {
-            data = gson.fromJson(json, object : TypeToken<List<TodoListEntry?>?>() {}.type)
-        } else {
-            data = ArrayList<TodoListEntry>()
-        }
-        return data
-    }
-
-    private fun storeTodoSharedPrefs(data: ArrayList<TodoListEntry>) {
-        val gson: Gson = Gson()
-        val editor = getSharedPreferences("todolist", 0)?.edit()
-        editor?.putString("todolistitems", gson.toJson(data))
-        editor?.apply()
-    }
-
-    private fun storeNewTask(task: TodoListEntry) {
-        var data = getTodoSharedPrefs()
-        data.add(task)
-        storeTodoSharedPrefs(data)
     }
 }

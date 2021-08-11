@@ -2,9 +2,9 @@ package com.piccinone.todolist
 
 import android.content.Context
 import android.graphics.Paint
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.util.Log
+import android.view.*
+import android.widget.AdapterView
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -31,34 +31,17 @@ class TodoListAdapter(private val data: ArrayList<TodoListEntry>, private val da
         holder.checkBox.isChecked = currentItem.completed
         holder.dateTextView.text = currentItem.date
 
-        if(currentItem.completed) {
-            holder.nameTextView.apply {
-                paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-            }
-        } else {
-            holder.nameTextView.apply {
-                paintFlags = paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
-            }
-        }
+        // Update the strikethrough text
+        holder.updateTextStrikethrough()
 
+        // When the task is checked or unchecked
         holder.checkBox.setOnClickListener {
-            val gson: Gson = Gson()
 
-            var updatedData: ArrayList<TodoListEntry> = ArrayList()
+            // Update the checked status
+            SharedPrefsUpdate.updateTask(context, position, TodoListEntry(holder.checkBox.isChecked, currentItem.taskName, currentItem.date))
 
-            updatedData = getTodoSharedPrefs().clone() as ArrayList<TodoListEntry>;
-            updatedData[position] = TodoListEntry(holder.checkBox.isChecked, currentItem.taskName, currentItem.date)
-            storeTodoSharedPrefs(updatedData)
-
-            if(holder.checkBox.isChecked) {
-                holder.nameTextView.apply {
-                    paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                }
-            } else {
-                holder.nameTextView.apply {
-                    paintFlags = paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
-                }
-            }
+            // Update the strikethrough text
+            holder.updateTextStrikethrough()
         }
 
     }
@@ -67,28 +50,51 @@ class TodoListAdapter(private val data: ArrayList<TodoListEntry>, private val da
         return dataFiltered.size
     }
 
-    class TodoListViewHolder(rowInstance: View) : RecyclerView.ViewHolder(rowInstance) {
+    class TodoListViewHolder(private val rowInstance: View) : RecyclerView.ViewHolder(rowInstance), View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
         val nameTextView: TextView = rowInstance.findViewById(R.id.taskTextView)
         val checkBox: CheckBox = rowInstance.findViewById(R.id.completedCheckbox)
         val dateTextView: TextView = rowInstance.findViewById(R.id.dateTextView)
-    }
 
-    private fun getTodoSharedPrefs() : ArrayList<TodoListEntry>{
-        val gson: Gson = Gson()
-        val json = context?.getSharedPreferences("todolist", 0)?.getString("todolistitems",null)
-        var data: ArrayList<TodoListEntry>
-        if(json != null) {
-            data = gson.fromJson(json, object : TypeToken<List<TodoListEntry?>?>() {}.type)
-        } else {
-            data = ArrayList<TodoListEntry>()
+        init {
+            rowInstance.setOnCreateContextMenuListener(this)
+
         }
-        return data
+
+        override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
+            menu?.setHeaderTitle("Actions")
+            val editTaskMenuItem: MenuItem? = menu?.add(Menu.NONE, 1, 1, "Edit")?.setOnMenuItemClickListener(this)
+            val deleteTaskMenuItem: MenuItem? = menu?.add(Menu.NONE, 2, 2, "Delete")?.setOnMenuItemClickListener(this)
+        }
+
+        override fun onMenuItemClick(item: MenuItem?): Boolean {
+            val info = item?.menuInfo
+            when (item?.itemId) {
+                1 -> {
+                    TODO("Editing tasks is not yet implemented")
+                }
+                2 -> {
+                    SharedPrefsUpdate.deleteTask(rowInstance.context, this.adapterPosition)
+                }
+            }
+
+            return true
+
+        }
+
+        // Update the strikethrough status of the checkbox
+        fun updateTextStrikethrough() {
+            if(checkBox.isChecked) {
+                nameTextView.apply {
+                    paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                }
+            } else {
+                nameTextView.apply {
+                    paintFlags = paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+                }
+            }
+        }
+
+
     }
 
-    private fun storeTodoSharedPrefs(data: ArrayList<TodoListEntry>) {
-        val gson: Gson = Gson()
-        val editor = context?.getSharedPreferences("todolist", 0)?.edit()
-        editor?.putString("todolistitems", gson.toJson(data))
-        editor?.apply()
-    }
 }

@@ -36,7 +36,7 @@ class AddItemDialogFragment : DialogFragment() {
             // Get the layout inflater
             val inflater: LayoutInflater = requireActivity().layoutInflater
 
-            builder.setMessage("Add Item")
+            builder.setMessage("New Task")
 
             //Inflate dialog_add_item layout
             val dialogView: View = inflater.inflate(R.layout.dialog_add_item, null)
