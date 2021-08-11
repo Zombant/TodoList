@@ -29,13 +29,8 @@ class TodoListFragment : Fragment() {
         editor?.apply()*/
         ///TESTING
 
-        val json = context?.getSharedPreferences("todolist", 0)?.getString("todolistitems",null)
-        var data: ArrayList<TodoListEntry>
-        if(json != null) {
-            data = gson.fromJson(json, object : TypeToken<List<TodoListEntry?>?>() {}.type)
-        } else {
-            data = ArrayList<TodoListEntry>()
-        }
+        var data: ArrayList<TodoListEntry> = SharedPrefsUpdate.loadTasks(activity?.applicationContext)
+
 
         // Set the Adapter of the RecyclerView that is in the root view (R.layout.fragment_todo_list)
         // to the custom Adapter and pass in the data, a copy of the data, and application context

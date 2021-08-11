@@ -7,18 +7,20 @@ import android.view.*
 import android.widget.AdapterView
 import android.widget.CheckBox
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class TodoListAdapter(private val data: ArrayList<TodoListEntry>, private val dataFiltered: ArrayList<TodoListEntry>, private val context: Context?) : RecyclerView.Adapter<TodoListAdapter.TodoListViewHolder>() {
+class TodoListAdapter(private val data: ArrayList<TodoListEntry>, private var dataFiltered: ArrayList<TodoListEntry>, private val context: Context?) : RecyclerView.Adapter<TodoListAdapter.TodoListViewHolder>() {
 
     // Called by recycle view when its time to create a new view holder
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoListAdapter.TodoListViewHolder {
         //Create a row instance but do add to RecyclerView yet (the RecyclerView does that)
         val rowInstance = LayoutInflater.from(parent.context).inflate(R.layout.todo_list_row, parent, false)
         //Pass new rowInstance to the View Holder
-        return TodoListViewHolder(rowInstance)
+        return TodoListViewHolder(rowInstance, this)
     }
 
     // Populates view holders with data
@@ -50,14 +52,13 @@ class TodoListAdapter(private val data: ArrayList<TodoListEntry>, private val da
         return dataFiltered.size
     }
 
-    class TodoListViewHolder(private val rowInstance: View) : RecyclerView.ViewHolder(rowInstance), View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
+    class TodoListViewHolder(private val rowInstance: View, private val adapter: TodoListAdapter) : RecyclerView.ViewHolder(rowInstance), View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
         val nameTextView: TextView = rowInstance.findViewById(R.id.taskTextView)
         val checkBox: CheckBox = rowInstance.findViewById(R.id.completedCheckbox)
         val dateTextView: TextView = rowInstance.findViewById(R.id.dateTextView)
 
         init {
             rowInstance.setOnCreateContextMenuListener(this)
-
         }
 
         override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
@@ -74,6 +75,7 @@ class TodoListAdapter(private val data: ArrayList<TodoListEntry>, private val da
                 }
                 2 -> {
                     SharedPrefsUpdate.deleteTask(rowInstance.context, this.adapterPosition)
+                    newFragment()
                 }
             }
 
@@ -94,6 +96,10 @@ class TodoListAdapter(private val data: ArrayList<TodoListEntry>, private val da
             }
         }
 
+        fun newFragment() {
+            var activity: AppCompatActivity = rowInstance.context as AppCompatActivity
+            activity.supportFragmentManager.beginTransaction().replace(R.id.fragmentHolder, TodoListFragment()).commit()
+        }
 
     }
 

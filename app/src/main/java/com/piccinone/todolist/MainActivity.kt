@@ -17,7 +17,7 @@ import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity(), AddItemDialogFragment.AddItemDialogListener {
 
-    private val fragment: TodoListFragment = TodoListFragment()
+    private var fragment: TodoListFragment = TodoListFragment()
 
     val DEFAULT_TASK_NAME = "Unnamed task"
 
@@ -26,6 +26,14 @@ class MainActivity : AppCompatActivity(), AddItemDialogFragment.AddItemDialogLis
         setContentView(R.layout.activity_main)
 
 
+        supportFragmentManager.beginTransaction().apply {
+            replace(R.id.fragmentHolder, fragment)
+            commit()
+        }
+    }
+
+    fun newFragment() {
+        fragment = TodoListFragment()
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.fragmentHolder, fragment)
             commit()
@@ -73,6 +81,9 @@ class MainActivity : AppCompatActivity(), AddItemDialogFragment.AddItemDialogLis
 
         // Store in shared preferences
         SharedPrefsUpdate.storeNewTask(applicationContext, TodoListEntry(false, taskName, date))
+
+        // New fragment to reflect new data
+        newFragment()
     }
 
     // When the "Cancel" button is pressed on the AddItemDialogFragment
