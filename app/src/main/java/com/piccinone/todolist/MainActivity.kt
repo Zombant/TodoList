@@ -1,5 +1,6 @@
 package com.piccinone.todolist
 
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +9,7 @@ import android.view.MenuItem
 import android.widget.CalendarView
 import android.widget.EditText
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -50,10 +52,15 @@ class MainActivity : AppCompatActivity(), AddItemDialogFragment.AddItemDialogLis
         return true
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         if (id == R.id.addTodoItem) {
             showAddItemDialog()
+            return true
+        } else if (id == R.id.deleteCompleted) {
+            SharedPrefsUpdate.deleteCompletedTasks(applicationContext)
+            newFragment()
             return true
         }
 

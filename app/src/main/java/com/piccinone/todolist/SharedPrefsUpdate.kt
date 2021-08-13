@@ -1,8 +1,11 @@
 package com.piccinone.todolist
 
 import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import java.util.function.Predicate
 
 class SharedPrefsUpdate {
     companion object {
@@ -26,6 +29,21 @@ class SharedPrefsUpdate {
             var updatedData: ArrayList<TodoListEntry> = ArrayList()
             updatedData = loadTasks(context).clone() as ArrayList<TodoListEntry>
             updatedData.removeAt(position)
+            storeTasks(context, updatedData)
+        }
+
+        @RequiresApi(Build.VERSION_CODES.N)
+        fun deleteCompletedTasks(context: Context?) {
+            val gson: Gson = Gson()
+            var updatedData: ArrayList<TodoListEntry> = ArrayList()
+            updatedData = loadTasks(context).clone() as ArrayList<TodoListEntry>
+
+            val condition: Predicate<TodoListEntry> =
+                Predicate<TodoListEntry> { task: TodoListEntry ->
+                    task.completed
+                }
+            updatedData.removeIf(condition)
+
             storeTasks(context, updatedData)
         }
 

@@ -35,8 +35,10 @@ class EditItemDialogFragment(val taskPosition: Int, val taskName: String, val co
             //Inflate dialog_add_item layout
             val dialogView: View = inflater.inflate(R.layout.dialog_add_item, null)
             val calendarView: CalendarView = dialogView.findViewById<CalendarView>(R.id.calendar)
+            val tasknameEditText = dialogView.findViewById<EditText>(R.id.taskNameEditText)
 
-            dialogView.findViewById<EditText>(R.id.taskNameEditText).setText(taskName)
+            tasknameEditText.setText(taskName)
+
             calendarView.date = date
 
             //Set the date when a new date is selected

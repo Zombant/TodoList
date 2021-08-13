@@ -8,4 +8,10 @@
         android:icon="@android:drawable/ic_menu_add"
         android:title="Add"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/deleteCompleted"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:title="Delete Completed"
+        app:showAsAction="never" />
 </menu>
