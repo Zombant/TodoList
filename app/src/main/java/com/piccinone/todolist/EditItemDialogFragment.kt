@@ -8,17 +8,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.CalendarView
+import android.widget.EditText
 import androidx.fragment.app.DialogFragment
 import java.lang.IllegalStateException
 import java.util.*
 
-class AddItemDialogFragment : DialogFragment() {
+class EditItemDialogFragment(val taskPosition: Int, val taskName: String, val completed: Boolean, val date: Long) : DialogFragment() {
 
     // Create a listener to deliver info to the activity
-    internal lateinit var listener: AddItemDialogListener
-    interface AddItemDialogListener {
-        fun onAddDialogPositiveClick(dialog: DialogFragment)
-        fun onAddDialogNegativeClick(dialog: DialogFragment)
+    internal lateinit var listener: EditItemDialogListener
+    interface EditItemDialogListener {
+        fun onEditDialogPositiveClick(dialog: DialogFragment)
+        fun onEditDialogNegativeClick(dialog: DialogFragment)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -29,13 +30,16 @@ class AddItemDialogFragment : DialogFragment() {
             // Get the layout inflater
             val inflater: LayoutInflater = requireActivity().layoutInflater
 
-            builder.setMessage("New Task")
+            builder.setMessage("Edit Task")
 
             //Inflate dialog_add_item layout
             val dialogView: View = inflater.inflate(R.layout.dialog_add_item, null)
+            val calendarView: CalendarView = dialogView.findViewById<CalendarView>(R.id.calendar)
+
+            dialogView.findViewById<EditText>(R.id.taskNameEditText).setText(taskName)
+            calendarView.date = date
 
             //Set the date when a new date is selected
-            val calendarView = dialogView.findViewById(R.id.calendar) as CalendarView
             calendarView.setOnDateChangeListener { view: CalendarView, year: Int, month: Int, day: Int ->
                 val calendar: Calendar = Calendar.getInstance()
                 calendar.set(year, month, day)
@@ -45,13 +49,13 @@ class AddItemDialogFragment : DialogFragment() {
 
 
             builder.setView(dialogView)
-            builder.setPositiveButton("Add", DialogInterface.OnClickListener { dialog, id ->
+            builder.setPositiveButton("Save", DialogInterface.OnClickListener { dialog, id ->
                 // Send the positive button event back to the host activity
-                listener.onAddDialogPositiveClick(this)
+                listener.onEditDialogPositiveClick(this)
             })
             builder.setNegativeButton("Cancel", DialogInterface.OnClickListener { dialog, id ->
                 // Send the negative button event back to the host activity
-                listener.onAddDialogNegativeClick(this)
+                listener.onEditDialogNegativeClick(this)
             })
 
             // Create the AlertDialog object and return it
@@ -65,7 +69,7 @@ class AddItemDialogFragment : DialogFragment() {
         // Verify that the host activity implements the callback interface
         try {
             // Instantiate the NoticeDialogListener so we can send events to the host
-            listener = context as AddItemDialogListener
+            listener = context as EditItemDialogListener
         } catch (e: ClassCastException) {
             // The activity doesn't implement the interface, throw exception
             throw ClassCastException((context.toString() + " must implement NoticeDialogListener"))

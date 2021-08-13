@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class MainActivity : AppCompatActivity(), AddItemDialogFragment.AddItemDialogListener {
+class MainActivity : AppCompatActivity(), AddItemDialogFragment.AddItemDialogListener, EditItemDialogFragment.EditItemDialogListener {
 
     private var fragment: TodoListFragment = TodoListFragment()
 
@@ -38,6 +38,11 @@ class MainActivity : AppCompatActivity(), AddItemDialogFragment.AddItemDialogLis
             replace(R.id.fragmentHolder, fragment)
             commit()
         }
+    }
+
+    fun sort() {
+        TODO("Not yet implemented")
+        //Will load data, sort it, store it back in sharedprefs, and create new fragment
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -64,8 +69,11 @@ class MainActivity : AppCompatActivity(), AddItemDialogFragment.AddItemDialogLis
         dialogFragment.show(supportFragmentManager, "AddItemDialogFragment")
     }
 
+
+
     // When the "Add" button is pressed on the AddItemDialogFragment
-    override fun onDialogPositiveClick(dialog: DialogFragment) {
+    //TODO: Clean up copy/pasted code
+    override fun onAddDialogPositiveClick(dialog: DialogFragment) {
         // Get views from dialog
         val taskNameEditText: EditText? = dialog.dialog?.findViewById(R.id.taskNameEditText) as EditText?
         val datePicker = dialog.dialog?.findViewById(R.id.calendar) as CalendarView?
@@ -87,7 +95,32 @@ class MainActivity : AppCompatActivity(), AddItemDialogFragment.AddItemDialogLis
     }
 
     // When the "Cancel" button is pressed on the AddItemDialogFragment
-    override fun onDialogNegativeClick(dialog: DialogFragment) {
+    override fun onAddDialogNegativeClick(dialog: DialogFragment) {
+        // Do nothing
+    }
+
+    override fun onEditDialogPositiveClick(dialog: DialogFragment) {
+        // Get views from dialog
+        val taskNameEditText: EditText? = dialog.dialog?.findViewById(R.id.taskNameEditText) as EditText?
+        val datePicker = dialog.dialog?.findViewById(R.id.calendar) as CalendarView?
+
+        // Get taskname and date from dialog
+        var taskName: String = taskNameEditText?.text.toString()
+        val date: String = SimpleDateFormat("MMM d, yyyy", Locale.getDefault()).format(Date(datePicker?.date!!))
+
+        // If task name is blank, set it to the default
+        if (taskName.isBlank()) {
+            taskName = DEFAULT_TASK_NAME
+        }
+
+        // Store in shared preferences
+        SharedPrefsUpdate.updateTask(applicationContext, (dialog as EditItemDialogFragment).taskPosition, TodoListEntry(dialog.completed, taskName, date))
+
+        // New fragment to reflect new data
+        newFragment()
+    }
+
+    override fun onEditDialogNegativeClick(dialog: DialogFragment) {
         //Do nothing
     }
 }
