@@ -64,6 +64,22 @@ class MainActivity : AppCompatActivity(), AddItemDialogFragment.AddItemDialogLis
             SharedPrefsUpdate.deleteCompletedTasks(applicationContext)
             newFragment()
             return true
+        } else if (id == R.id.incDate) {
+            SharedPrefsUpdate.sortTasks(applicationContext, SortType.DateInc)
+            newFragment()
+            return true
+        } else if (id == R.id.decDate) {
+            SharedPrefsUpdate.sortTasks(applicationContext, SortType.DateDec)
+            newFragment()
+            return true
+        } else if (id == R.id.AtoZ) {
+            SharedPrefsUpdate.sortTasks(applicationContext, SortType.AtoZ)
+            newFragment()
+            return true
+        } else if (id == R.id.ZtoA) {
+            SharedPrefsUpdate.sortTasks(applicationContext, SortType.ZtoA)
+            newFragment()
+            return true
         }
 
         return super.onOptionsItemSelected(item)

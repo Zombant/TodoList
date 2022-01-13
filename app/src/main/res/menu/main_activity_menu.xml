@@ -14,4 +14,30 @@
         android:icon="@android:drawable/ic_menu_delete"
         android:title="Delete Completed"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/sort"
+        android:icon="@android:drawable/ic_menu_sort_by_size"
+        android:title="Sort"
+        app:showAsAction="never" >
+        <menu>
+            <item
+                android:id="@+id/incDate"
+                android:title="Increasing Date"
+                app:showAsAction="never"/>
+            <item
+                android:id="@+id/decDate"
+                android:title="Decreasing Date"
+                app:showAsAction="never"/>
+            <item
+                android:id="@+id/AtoZ"
+                android:title="Alphabetical"
+                app:showAsAction="never"/>
+            <item
+                android:id="@+id/ZtoA"
+                android:title="Reverse Alphabetical"
+                app:showAsAction="never"/>
+
+        </menu>
+    </item>
 </menu>
