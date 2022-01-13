@@ -38,6 +38,11 @@ class TodoListAdapter(private val data: ArrayList<TodoListEntry>, private var da
         //Populate respective view holder with the data
         holder.nameTextView.text = currentItem.taskName
         holder.checkBox.isChecked = currentItem.completed
+//        if(currentItem.date == ""){
+//            holder.dateTextView.text = ""
+//        } else {
+//            holder.dateTextView.text = currentItem.date
+//        }
         holder.dateTextView.text = currentItem.date
 
         // Update the strikethrough text
@@ -92,8 +97,7 @@ class TodoListAdapter(private val data: ArrayList<TodoListEntry>, private var da
         }
 
         private fun editTask() {
-            val formatter = SimpleDateFormat("MMM d, yyyy", Locale.getDefault())
-            val editDialog: EditItemDialogFragment = EditItemDialogFragment(this.adapterPosition, this.nameTextView.text as String, this.checkBox.isChecked, formatter.parse(this.dateTextView.text as String).time)
+            val editDialog: EditItemDialogFragment = EditItemDialogFragment(this.adapterPosition, this.nameTextView.text as String, this.checkBox.isChecked, this.dateTextView.text as String)
             var activity: AppCompatActivity = rowInstance.context as AppCompatActivity
             editDialog.show(activity.supportFragmentManager, "EditItemDialogFragment")
         }

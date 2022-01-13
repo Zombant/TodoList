@@ -8,8 +8,10 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.CalendarView
 import android.widget.EditText
+import android.widget.Switch
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.DialogFragment
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -84,10 +86,15 @@ class MainActivity : AppCompatActivity(), AddItemDialogFragment.AddItemDialogLis
         // Get views from dialog
         val taskNameEditText: EditText? = dialog.dialog?.findViewById(R.id.taskNameEditText) as EditText?
         val datePicker = dialog.dialog?.findViewById(R.id.calendar) as CalendarView?
+        val dateSwitch = dialog.dialog?.findViewById(R.id.hasDateSwitch) as Switch?
 
         // Get taskname and date from dialog
         var taskName: String = taskNameEditText?.text.toString()
-        val date: String = SimpleDateFormat("MMM d, yyyy", Locale.getDefault()).format(Date(datePicker?.date!!))
+        val date = if (dateSwitch!!.isChecked){
+            SimpleDateFormat("MMM d, yyyy", Locale.getDefault()).format(Date(datePicker?.date!!))
+        } else {
+            ""
+        }
 
         // If task name is blank, set it to the default
         if (taskName.isBlank()) {
@@ -110,10 +117,15 @@ class MainActivity : AppCompatActivity(), AddItemDialogFragment.AddItemDialogLis
         // Get views from dialog
         val taskNameEditText: EditText? = dialog.dialog?.findViewById(R.id.taskNameEditText) as EditText?
         val datePicker = dialog.dialog?.findViewById(R.id.calendar) as CalendarView?
+        val dateSwitch = dialog.dialog?.findViewById(R.id.hasDateSwitch) as Switch?
 
         // Get taskname and date from dialog
         var taskName: String = taskNameEditText?.text.toString()
-        val date: String = SimpleDateFormat("MMM d, yyyy", Locale.getDefault()).format(Date(datePicker?.date!!))
+        val date = if (dateSwitch!!.isChecked){
+            SimpleDateFormat("MMM d, yyyy", Locale.getDefault()).format(Date(datePicker?.date!!))
+        } else {
+            ""
+        }
 
         // If task name is blank, set it to the default
         if (taskName.isBlank()) {

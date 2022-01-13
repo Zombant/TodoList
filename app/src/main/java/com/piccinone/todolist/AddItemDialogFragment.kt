@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.CalendarView
+import android.widget.Switch
 import androidx.fragment.app.DialogFragment
 import java.lang.IllegalStateException
 import java.util.*
@@ -42,7 +43,8 @@ class AddItemDialogFragment : DialogFragment() {
                 view.date = calendar.timeInMillis
             }
 
-
+            val dateSwitch = dialogView.findViewById(R.id.hasDateSwitch) as Switch
+            dateSwitch.isChecked = true
 
             builder.setView(dialogView)
             builder.setPositiveButton("Add", DialogInterface.OnClickListener { dialog, id ->

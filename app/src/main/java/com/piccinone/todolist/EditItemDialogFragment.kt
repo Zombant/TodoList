@@ -9,11 +9,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.CalendarView
 import android.widget.EditText
+import android.widget.Switch
 import androidx.fragment.app.DialogFragment
 import java.lang.IllegalStateException
+import java.text.SimpleDateFormat
 import java.util.*
 
-class EditItemDialogFragment(val taskPosition: Int, val taskName: String, val completed: Boolean, val date: Long) : DialogFragment() {
+class EditItemDialogFragment(val taskPosition: Int, val taskName: String, val completed: Boolean, val date: String) : DialogFragment() {
 
     // Create a listener to deliver info to the activity
     internal lateinit var listener: EditItemDialogListener
@@ -34,12 +36,25 @@ class EditItemDialogFragment(val taskPosition: Int, val taskName: String, val co
 
             //Inflate dialog_add_item layout
             val dialogView: View = inflater.inflate(R.layout.dialog_add_item, null)
-            val calendarView: CalendarView = dialogView.findViewById<CalendarView>(R.id.calendar)
+
+            // Set up date formatter
+            val formatter = SimpleDateFormat("MMM d, yyyy", Locale.getDefault())
+
+            val calendarView = dialogView.findViewById<CalendarView>(R.id.calendar)
             val tasknameEditText = dialogView.findViewById<EditText>(R.id.taskNameEditText)
+            val hasDateSwitch = dialogView.findViewById<Switch>(R.id.hasDateSwitch)
 
             tasknameEditText.setText(taskName)
 
-            calendarView.date = date
+            if (date != "") {
+                hasDateSwitch.isChecked = true
+                calendarView.date = formatter.parse(date).time
+                calendarView.isEnabled = true
+            } else {
+                hasDateSwitch.isChecked = false
+                calendarView.date = Calendar.getInstance().timeInMillis
+                calendarView.isEnabled = false
+            }
 
             //Set the date when a new date is selected
             calendarView.setOnDateChangeListener { view: CalendarView, year: Int, month: Int, day: Int ->
