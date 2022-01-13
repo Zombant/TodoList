@@ -99,6 +99,11 @@ class SharedPrefsUpdate {
             storeTasks(context, outputData)
         }
 
+        fun numTasks(context: Context?) : Int {
+            var data = loadTasks(context)
+            return data.size
+        }
+
         fun loadTasks(context: Context?) : ArrayList<TodoListEntry> {
             val gson: Gson = Gson()
             val json = context?.getSharedPreferences("todolist", 0)?.getString("todolistitems",null)

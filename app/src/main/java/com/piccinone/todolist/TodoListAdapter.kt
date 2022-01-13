@@ -10,6 +10,7 @@ import android.widget.CheckBox
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -38,11 +39,7 @@ class TodoListAdapter(private val data: ArrayList<TodoListEntry>, private var da
         //Populate respective view holder with the data
         holder.nameTextView.text = currentItem.taskName
         holder.checkBox.isChecked = currentItem.completed
-//        if(currentItem.date == ""){
-//            holder.dateTextView.text = ""
-//        } else {
-//            holder.dateTextView.text = currentItem.date
-//        }
+
         holder.dateTextView.text = currentItem.date
 
         // Update the strikethrough text
@@ -118,6 +115,7 @@ class TodoListAdapter(private val data: ArrayList<TodoListEntry>, private var da
         private fun newFragment() {
             var activity: AppCompatActivity = rowInstance.context as AppCompatActivity
             activity.supportFragmentManager.beginTransaction().replace(R.id.fragmentHolder, TodoListFragment()).commit()
+            activity.findViewById<TextView>(R.id.noTasksText).isVisible = SharedPrefsUpdate.numTasks(activity) == 0
         }
 
     }

@@ -27,7 +27,7 @@ class TodoListFragment : Fragment() {
         val editor = context?.getSharedPreferences("todolist", 0)?.edit()
         editor?.putString("todolistitems", gson.toJson(dataTest))
         editor?.apply()*/
-        ///TESTING
+        //TESTING
 
         var data: ArrayList<TodoListEntry> = SharedPrefsUpdate.loadTasks(activity?.applicationContext)
 

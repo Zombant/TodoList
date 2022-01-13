@@ -12,6 +12,7 @@ import android.widget.Switch
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.SwitchCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -29,24 +30,24 @@ class MainActivity : AppCompatActivity(), AddItemDialogFragment.AddItemDialogLis
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
-        supportFragmentManager.beginTransaction().apply {
-            replace(R.id.fragmentHolder, fragment)
-            commit()
+        if(SharedPrefsUpdate.numTasks(applicationContext) == 0) {
+            findViewById<TextView>(R.id.noTasksText).isVisible = true
+        } else {
+            supportFragmentManager.beginTransaction().apply {
+                replace(R.id.fragmentHolder, fragment)
+                commit()
+            }
+            findViewById<TextView>(R.id.noTasksText).isVisible = false
         }
     }
 
-    fun newFragment() {
+    private fun newFragment() {
         fragment = TodoListFragment()
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.fragmentHolder, fragment)
             commit()
         }
-    }
-
-    fun sort() {
-        TODO("Not yet implemented")
-        //Will load data, sort it, store it back in sharedprefs, and create new fragment
+        findViewById<TextView>(R.id.noTasksText).isVisible = SharedPrefsUpdate.numTasks(applicationContext) == 0
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
